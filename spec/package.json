@@ -1,0 +1,16 @@
+{
+  "name": "scheduling-api-spec",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsp compile .",
+    "watch": "tsp compile . --watch"
+  },
+  "dependencies": {
+    "@typespec/compiler": "^0.63.0",
+    "@typespec/http": "^0.63.0",
+    "@typespec/rest": "^0.63.0",
+    "@typespec/openapi3": "^0.63.0"
+  }
+}
