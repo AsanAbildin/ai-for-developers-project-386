@@ -1,0 +1,35 @@
+{
+  "name": "frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "generate:api-types": "openapi-typescript ../../spec/tsp-output/openapi.yaml -o ./app/types/api.d.ts"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.121",
+    "@iconify-json/simple-icons": "^1.2.92",
+    "@nuxt/ui": "^4.10.0",
+    "dayjs": "^1.11.13",
+    "nuxt": "^4.5.1",
+    "openapi-fetch": "^0.17.0",
+    "tailwindcss": "^4.3.3",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.16.0",
+    "eslint": "^10.8.0",
+    "openapi-typescript": "^7.5.2",
+    "typescript": "^6.0.3",
+    "vitest": "^3.0.4",
+    "vue-tsc": "^3.3.9"
+  },
+  "packageManager": "pnpm@11.18.0"
+}
