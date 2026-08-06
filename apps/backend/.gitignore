@@ -1,0 +1,17 @@
+# Compiled output
+/dist
+/node_modules
+
+# Coverage
+/coverage
+
+# Logs
+*.log
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Misc
+.DS_Store
