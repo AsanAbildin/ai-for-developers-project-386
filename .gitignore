@@ -2,3 +2,5 @@ node_modules/
 tsp-output/
 dist/
 .env
+test-results/
+playwright-report/
