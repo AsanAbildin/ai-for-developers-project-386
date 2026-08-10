@@ -1,0 +1,75 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  check:
+    name: Lint, types and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.18.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build OpenAPI spec
+        run: pnpm --filter scheduling-api-spec build
+
+      - name: Check generated API types are up to date
+        run: |
+          pnpm --filter frontend generate:api-types
+          git diff --exit-code apps/frontend/app/types/api.d.ts
+
+      - name: Lint
+        run: |
+          pnpm --filter backend lint
+          pnpm --filter frontend lint
+
+      - name: Typecheck
+        run: pnpm --filter frontend typecheck
+
+      - name: Backend unit tests
+        run: STORAGE_DRIVER=memory pnpm --filter backend test
+
+      - name: Frontend unit tests
+        run: pnpm --filter frontend test
+
+  e2e:
+    name: E2E tests (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.18.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build backend
+        run: STORAGE_DRIVER=memory pnpm --filter backend build
+
+      - name: Install Playwright browser
+        run: pnpm --filter e2e exec playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm --filter e2e test
