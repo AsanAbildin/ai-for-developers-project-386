@@ -96,6 +96,7 @@ async function confirmDelete() {
       </div>
       <UButton
         icon="i-lucide-plus"
+        data-testid="add-event-type-button"
         @click="openCreateModal"
       >
         Добавить тип
@@ -104,6 +105,7 @@ async function confirmDelete() {
 
     <UAlert
       v-if="error"
+      data-testid="admin-event-types-error"
       color="error"
       variant="soft"
       :title="getApiErrorMessage(error)"
@@ -116,6 +118,7 @@ async function confirmDelete() {
 
     <UAlert
       v-else-if="!eventTypes?.length"
+      data-testid="admin-event-types-empty"
       color="neutral"
       variant="soft"
       title="Пока нет типов событий"
@@ -123,14 +126,20 @@ async function confirmDelete() {
 
     <div
       v-else
+      data-testid="admin-event-types-list"
       class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
       <UCard
         v-for="eventType in eventTypes"
         :key="eventType.id"
+        data-testid="admin-event-type-card"
+        :data-event-type-id="eventType.id"
       >
         <template #header>
-          <h2 class="font-semibold text-highlighted">
+          <h2
+            class="font-semibold text-highlighted"
+            data-testid="admin-event-type-name"
+          >
             {{ eventType.name }}
           </h2>
         </template>
@@ -150,6 +159,7 @@ async function confirmDelete() {
                 size="xs"
                 variant="soft"
                 icon="i-lucide-pencil"
+                data-testid="edit-event-type-button"
                 @click="openEditModal(eventType)"
               >
                 Изменить
@@ -159,6 +169,7 @@ async function confirmDelete() {
                 color="error"
                 variant="soft"
                 icon="i-lucide-trash-2"
+                data-testid="delete-event-type-button"
                 @click="deleteTarget = eventType"
               >
                 Удалить
@@ -182,6 +193,7 @@ async function confirmDelete() {
             :schema="eventTypeFormSchema"
             :state="formState"
             class="space-y-4"
+            data-testid="event-type-form"
             @submit="onSubmit"
           >
             <UFormField
@@ -192,6 +204,7 @@ async function confirmDelete() {
               <UInput
                 v-model="formState.name"
                 class="w-full"
+                data-testid="event-type-name-input"
               />
             </UFormField>
 
@@ -202,6 +215,7 @@ async function confirmDelete() {
               <UTextarea
                 v-model="formState.description"
                 class="w-full"
+                data-testid="event-type-description-input"
               />
             </UFormField>
 
@@ -215,6 +229,7 @@ async function confirmDelete() {
                 type="number"
                 min="1"
                 class="w-full"
+                data-testid="event-type-duration-input"
               />
             </UFormField>
 
@@ -222,6 +237,7 @@ async function confirmDelete() {
               <UButton
                 variant="ghost"
                 color="neutral"
+                data-testid="event-type-form-cancel-button"
                 @click="isModalOpen = false"
               >
                 Отмена
@@ -229,6 +245,7 @@ async function confirmDelete() {
               <UButton
                 type="submit"
                 :loading="submitting"
+                data-testid="event-type-form-submit-button"
               >
                 Сохранить
               </UButton>
@@ -260,6 +277,7 @@ async function confirmDelete() {
               <UButton
                 variant="ghost"
                 color="neutral"
+                data-testid="delete-event-type-cancel-button"
                 @click="deleteTarget = null"
               >
                 Отмена
@@ -267,6 +285,7 @@ async function confirmDelete() {
               <UButton
                 color="error"
                 :loading="deleting"
+                data-testid="delete-event-type-confirm-button"
                 @click="confirmDelete"
               >
                 Удалить

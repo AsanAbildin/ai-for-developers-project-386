@@ -75,6 +75,7 @@ function statusLabel(booking: Booking) {
 
     <UAlert
       v-if="error"
+      data-testid="admin-bookings-error"
       color="error"
       variant="soft"
       :title="getApiErrorMessage(error)"
@@ -87,6 +88,7 @@ function statusLabel(booking: Booking) {
 
     <UAlert
       v-else-if="!sortedBookings.length"
+      data-testid="admin-bookings-empty"
       color="neutral"
       variant="soft"
       title="Бронирований пока нет"
@@ -94,7 +96,10 @@ function statusLabel(booking: Booking) {
 
     <template v-else>
       <div class="overflow-x-auto rounded-lg border border-default">
-        <table class="w-full text-sm">
+        <table
+          class="w-full text-sm"
+          data-testid="admin-bookings-table"
+        >
           <thead class="bg-elevated text-left">
             <tr>
               <th class="p-3">
@@ -117,15 +122,25 @@ function statusLabel(booking: Booking) {
               v-for="booking in pagedBookings"
               :key="booking.id"
               class="border-t border-default"
+              data-testid="booking-row"
+              :data-booking-id="booking.id"
             >
-              <td class="p-3 whitespace-nowrap">
+              <td
+                class="p-3 whitespace-nowrap"
+                data-testid="booking-row-start-time"
+              >
                 {{ dayjs(booking.startTime).format('D MMM YYYY, HH:mm') }}
               </td>
-              <td class="p-3">
+              <td
+                class="p-3"
+                data-testid="booking-row-event-type"
+              >
                 {{ booking.eventTypeName }} ({{ booking.durationMinutes }} мин)
               </td>
               <td class="p-3">
-                <div>{{ booking.guestName }}</div>
+                <div data-testid="booking-row-guest-name">
+                  {{ booking.guestName }}
+                </div>
                 <div class="text-muted text-xs">
                   {{ booking.guestEmail }}
                 </div>
@@ -134,6 +149,7 @@ function statusLabel(booking: Booking) {
                 <UBadge
                   :color="booking.status === 'cancelled' ? 'neutral' : 'success'"
                   variant="subtle"
+                  data-testid="booking-row-status"
                 >
                   {{ statusLabel(booking) }}
                 </UBadge>
@@ -144,6 +160,7 @@ function statusLabel(booking: Booking) {
                   size="xs"
                   color="error"
                   variant="soft"
+                  data-testid="cancel-booking-button"
                   @click="openCancelModal(booking)"
                 >
                   Отменить
@@ -157,12 +174,32 @@ function statusLabel(booking: Booking) {
       <div
         v-if="totalPages > 1"
         class="flex justify-center"
+        data-testid="admin-bookings-pagination"
       >
         <UPagination
           v-model:page="page"
           :total="sortedBookings.length"
           :items-per-page="pageSize"
-        />
+        >
+          <template #next>
+            <UButton
+              icon="i-lucide-chevron-right"
+              variant="outline"
+              color="neutral"
+              square
+              data-testid="bookings-next-page-button"
+            />
+          </template>
+          <template #prev>
+            <UButton
+              icon="i-lucide-chevron-left"
+              variant="outline"
+              color="neutral"
+              square
+              data-testid="bookings-prev-page-button"
+            />
+          </template>
+        </UPagination>
       </div>
     </template>
 
@@ -187,6 +224,7 @@ function statusLabel(booking: Booking) {
               v-model="cancelReason"
               class="w-full"
               placeholder="Например: изменилось расписание владельца"
+              data-testid="owner-cancel-reason-input"
             />
           </UFormField>
 
@@ -195,6 +233,7 @@ function statusLabel(booking: Booking) {
               <UButton
                 variant="ghost"
                 color="neutral"
+                data-testid="owner-cancel-dismiss-button"
                 @click="cancelTarget = null"
               >
                 Нет, оставить
@@ -202,6 +241,7 @@ function statusLabel(booking: Booking) {
               <UButton
                 color="error"
                 :loading="cancelling"
+                data-testid="owner-cancel-confirm-button"
                 @click="confirmCancel"
               >
                 Да, отменить

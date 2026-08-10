@@ -20,6 +20,7 @@ const { data: eventTypes, status, error, refresh } = await useAsyncData(
 
     <UAlert
       v-if="error"
+      data-testid="event-types-error"
       color="error"
       variant="soft"
       :title="getApiErrorMessage(error)"
@@ -38,6 +39,7 @@ const { data: eventTypes, status, error, refresh } = await useAsyncData(
 
     <UAlert
       v-else-if="!eventTypes?.length"
+      data-testid="event-types-empty"
       color="neutral"
       variant="soft"
       title="Пока нет доступных типов событий"
@@ -46,30 +48,43 @@ const { data: eventTypes, status, error, refresh } = await useAsyncData(
 
     <div
       v-else
+      data-testid="event-types-list"
       class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
       <UCard
         v-for="eventType in eventTypes"
         :key="eventType.id"
+        data-testid="event-type-card"
+        :data-event-type-id="eventType.id"
       >
         <template #header>
-          <h2 class="font-semibold text-highlighted">
+          <h2
+            class="font-semibold text-highlighted"
+            data-testid="event-type-name"
+          >
             {{ eventType.name }}
           </h2>
         </template>
 
-        <p class="text-muted line-clamp-3">
+        <p
+          class="text-muted line-clamp-3"
+          data-testid="event-type-description"
+        >
           {{ eventType.description }}
         </p>
 
         <template #footer>
           <div class="flex items-center justify-between gap-3">
-            <span class="text-sm text-muted flex items-center gap-1">
+            <span
+              class="text-sm text-muted flex items-center gap-1"
+              data-testid="event-type-duration"
+            >
               <UIcon name="i-lucide-clock" />
               {{ eventType.durationMinutes }} мин
             </span>
             <UButton
               :to="`/book/${eventType.id}`"
+              data-testid="book-button"
               trailing-icon="i-lucide-arrow-right"
             >
               Записаться
@@ -81,6 +96,7 @@ const { data: eventTypes, status, error, refresh } = await useAsyncData(
 
     <UButton
       v-if="error"
+      data-testid="event-types-retry-button"
       variant="soft"
       icon="i-lucide-refresh-cw"
       @click="refresh()"

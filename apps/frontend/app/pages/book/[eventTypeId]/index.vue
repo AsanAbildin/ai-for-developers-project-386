@@ -115,6 +115,7 @@ async function confirmCancel() {
 
     <UAlert
       v-if="eventTypeError"
+      data-testid="event-type-error"
       color="error"
       variant="soft"
       :title="getApiErrorMessage(eventTypeError)"
@@ -122,7 +123,10 @@ async function confirmCancel() {
 
     <template v-else-if="eventTypeStatus === 'success' && eventType">
       <div>
-        <h1 class="text-2xl font-bold text-highlighted">
+        <h1
+          class="text-2xl font-bold text-highlighted"
+          data-testid="booking-event-type-name"
+        >
           {{ eventType.name }}
         </h1>
         <p class="text-muted mt-1">
@@ -137,6 +141,7 @@ async function confirmCancel() {
       <!-- Успешное бронирование -->
       <UCard
         v-if="bookingResult"
+        data-testid="booking-confirmation"
         class="border border-success"
       >
         <template #header>
@@ -152,7 +157,9 @@ async function confirmCancel() {
           <dt class="text-muted">
             Дата и время
           </dt>
-          <dd>{{ dayjs(bookingResult.startTime).format('D MMMM YYYY, HH:mm') }}</dd>
+          <dd data-testid="booking-start-time">
+            {{ dayjs(bookingResult.startTime).format('D MMMM YYYY, HH:mm') }}
+          </dd>
           <dt class="text-muted">
             Имя
           </dt>
@@ -170,6 +177,8 @@ async function confirmCancel() {
           icon="i-lucide-key-round"
           title="Сохраните токен отмены"
           :description="bookingResult.cancellationToken"
+          data-testid="cancellation-token"
+          :data-cancellation-token="bookingResult.cancellationToken"
         />
 
         <template #footer>
@@ -177,6 +186,7 @@ async function confirmCancel() {
             color="error"
             variant="soft"
             icon="i-lucide-x"
+            data-testid="open-cancel-booking-button"
             @click="showCancelModal = true"
           >
             Отменить бронирование
@@ -188,6 +198,7 @@ async function confirmCancel() {
       <template v-else>
         <UAlert
           v-if="slotsError"
+          data-testid="slots-error"
           color="error"
           variant="soft"
           :title="getApiErrorMessage(slotsError)"
@@ -198,13 +209,18 @@ async function confirmCancel() {
             <h2 class="font-semibold text-highlighted mb-2">
               Выберите день
             </h2>
-            <div class="flex gap-2 overflow-x-auto pb-2">
+            <div
+              class="flex gap-2 overflow-x-auto pb-2"
+              data-testid="day-list"
+            >
               <UButton
                 v-for="day in days"
                 :key="day.toISOString()"
                 :variant="selectedDayKey === dayjs(day).format('YYYY-MM-DD') ? 'solid' : 'outline'"
                 color="neutral"
                 class="flex-col items-center min-w-16"
+                data-testid="day-button"
+                :data-day="dayjs(day).format('YYYY-MM-DD')"
                 @click="selectDay(dayjs(day).format('YYYY-MM-DD'))"
               >
                 <span class="text-xs uppercase">{{ dayjs(day).format('dd') }}</span>
@@ -225,6 +241,7 @@ async function confirmCancel() {
 
             <UAlert
               v-else-if="!availableSlotsForSelectedDay.length"
+              data-testid="slots-empty"
               color="neutral"
               variant="soft"
               title="На выбранный день свободных слотов нет"
@@ -233,12 +250,15 @@ async function confirmCancel() {
             <div
               v-else
               class="flex flex-wrap gap-2"
+              data-testid="slot-list"
             >
               <UButton
                 v-for="slot in availableSlotsForSelectedDay"
                 :key="slot.startTime"
                 :variant="selectedSlot?.startTime === slot.startTime ? 'solid' : 'outline'"
                 color="primary"
+                data-testid="slot-button"
+                :data-slot-start-time="slot.startTime"
                 @click="selectSlot(slot)"
               >
                 {{ dayjs(slot.startTime).format('HH:mm') }}
@@ -246,7 +266,10 @@ async function confirmCancel() {
             </div>
           </div>
 
-          <UCard v-if="selectedSlot">
+          <UCard
+            v-if="selectedSlot"
+            data-testid="booking-form-card"
+          >
             <template #header>
               <h2 class="font-semibold text-highlighted">
                 Ваши данные
@@ -257,6 +280,7 @@ async function confirmCancel() {
               :schema="bookingFormSchema"
               :state="formState"
               class="space-y-4"
+              data-testid="booking-form"
               @submit="onSubmit"
             >
               <UFormField
@@ -268,6 +292,7 @@ async function confirmCancel() {
                   v-model="formState.guestName"
                   class="w-full"
                   placeholder="Иван Иванов"
+                  data-testid="guest-name-input"
                 />
               </UFormField>
 
@@ -281,6 +306,7 @@ async function confirmCancel() {
                   type="email"
                   class="w-full"
                   placeholder="ivan@example.com"
+                  data-testid="guest-email-input"
                 />
               </UFormField>
 
@@ -288,6 +314,7 @@ async function confirmCancel() {
                 type="submit"
                 :loading="submitting"
                 block
+                data-testid="submit-booking-button"
               >
                 Забронировать на {{ dayjs(selectedSlot.startTime).format('D MMMM, HH:mm') }}
               </UButton>
@@ -297,7 +324,9 @@ async function confirmCancel() {
       </template>
     </template>
 
-    <UModal v-model:open="showCancelModal">
+    <UModal
+      v-model:open="showCancelModal"
+    >
       <template #content>
         <UCard>
           <template #header>
@@ -315,6 +344,7 @@ async function confirmCancel() {
               <UButton
                 variant="ghost"
                 color="neutral"
+                data-testid="guest-cancel-dismiss-button"
                 @click="showCancelModal = false"
               >
                 Нет, оставить
@@ -322,6 +352,7 @@ async function confirmCancel() {
               <UButton
                 color="error"
                 :loading="cancelling"
+                data-testid="guest-cancel-confirm-button"
                 @click="confirmCancel"
               >
                 Да, отменить
