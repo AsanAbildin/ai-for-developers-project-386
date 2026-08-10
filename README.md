@@ -1,6 +1,13 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/AsanAbildin/ai-for-developers-project-386/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AsanAbildin/ai-for-developers-project-386/actions)
 
+## Развёрнутое приложение
+
+Публичная ссылка на работающее приложение (Render, сборка из `Dockerfile`,
+запуск по переменной окружения `PORT`):
+
+- **https://scheduling-app-386.onrender.com** — интерфейс и API (`/api/*`).
+
 ## Структура репозитория
 
 - `spec/` — контракт API (TypeSpec), собирается в `spec/tsp-output/openapi.yaml`.
