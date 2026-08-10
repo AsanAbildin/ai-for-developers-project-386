@@ -24,6 +24,13 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
+
+  // Node по умолчанию закрывает idle keep-alive соединение через 5с, из-за
+  // чего клиенты получают редкие "socket hang up" при повторном использовании
+  // пула соединений. Поднимаем таймауты до стандартных значений за прокси.
+  const server = app.getHttpServer();
+  server.keepAliveTimeout = 60_000;
+  server.headersTimeout = 66_000;
 }
 
 void bootstrap();

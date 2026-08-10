@@ -36,6 +36,7 @@ export class BookingsController {
   }
 
   @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
   async cancelByOwner(
     @Param('id') id: string,
     @Body() dto: CancelBookingDto,
@@ -45,6 +46,7 @@ export class BookingsController {
   }
 
   @Post(':id/guest-cancel')
+  @HttpCode(HttpStatus.OK)
   async cancelByGuest(
     @Param('id') id: string,
     @Query('cancellationToken') cancellationToken: string | undefined,
