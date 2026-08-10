@@ -47,6 +47,19 @@ typecheck       Проверить типы фронтенда
 
 Ниже описан тот же процесс через `pnpm`/`docker compose` напрямую.
 
+## Релизы
+
+Версии формируются автоматически из коммитов по [Conventional Commits](AGENTS.md) —
+workflow `release-please` (см. `.github/workflows/release-please.yml`). При пуше в `main`
+release-please:
+
+1. На основе конвенциональных коммитов вычисляет новую версию (единую для всего репозитория),
+   собирает `CHANGELOG.md` и обновляет `package.json`.
+2. Открывает pull request «release» с этими изменениями.
+3. После мёрджа PR создаёт git-тег `v<версия>` и GitHub Release.
+
+Конфигурация: `release-please-config.json` и `.release-please-manifest.json`.
+
 ## Установка
 
 ```sh
