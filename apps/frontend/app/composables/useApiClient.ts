@@ -10,8 +10,14 @@ let client: Client<paths> | undefined
  */
 export function useApiClient() {
   if (!client) {
-    const { public: { apiBaseUrl } } = useRuntimeConfig()
-    client = createClient<paths>({ baseUrl: apiBaseUrl })
+    const runtimeConfig = useRuntimeConfig()
+    // На сервере (SSR) нужен абсолютный URL — относительный /api не разрешается
+    // в Node-фетче. На клиенте — относительный /api (тот же origin), который
+    // фронтенд проксирует на бэкенд (см. server/routes/api).
+    const base = import.meta.server
+      ? (runtimeConfig.apiBaseUrlServer || runtimeConfig.public.apiBaseUrl)
+      : runtimeConfig.public.apiBaseUrl
+    client = createClient<paths>({ baseUrl: base })
   }
   return client
 }
