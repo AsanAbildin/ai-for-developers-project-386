@@ -1,5 +1,5 @@
 .PHONY: help install env spec-build api-types db-up db-down migrate setup \
-	backend-dev frontend-dev dev build test lint typecheck
+	backend-dev frontend-dev dev backend-prod frontend-prod prod build test lint typecheck
 
 help: ## Показать список доступных команд
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -38,6 +38,18 @@ dev: db-up ## Поднять БД и запустить бэкенд + фрон�
 	@trap 'kill 0' EXIT INT TERM; \
 	$(MAKE) backend-dev & \
 	$(MAKE) frontend-dev & \
+	wait
+
+backend-prod: ## Запустить бэкенд в прод-режиме (собранная версия)
+	pnpm --filter backend start:prod
+
+frontend-prod: ## Запустить фронтенд в прод-режиме (preview собранной версии)
+	pnpm --filter frontend preview
+
+prod: build ## Собрать и запустить бэкенд + фронтенд в прод-режиме
+	@trap 'kill 0' EXIT INT TERM; \
+	$(MAKE) backend-prod & \
+	$(MAKE) frontend-prod & \
 	wait
 
 build: ## Собрать бэкенд и фронтенд (production)
