@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { Server } from 'http';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -28,7 +29,7 @@ async function bootstrap() {
   // Node по умолчанию закрывает idle keep-alive соединение через 5с, из-за
   // чего клиенты получают редкие "socket hang up" при повторном использовании
   // пула соединений. Поднимаем таймауты до стандартных значений за прокси.
-  const server = app.getHttpServer();
+  const server = app.getHttpServer() as Server;
   server.keepAliveTimeout = 60_000;
   server.headersTimeout = 66_000;
 }
